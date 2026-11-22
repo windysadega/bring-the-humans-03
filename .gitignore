@@ -1,0 +1,7 @@
+# Rendered output (regenerate with: node main.ts)
+*.mp4
+makefun-tiktok-ad.mp4
+
+node_modules/
+.DS_Store
+
