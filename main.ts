@@ -21,7 +21,7 @@
 // Usage:  node main.ts [output.mp4]     (default: ./makefun-tiktok-ad.mp4)
 
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -330,4 +330,17 @@ function main() {
   }
 }
 
-main();
+// ---------------------------------------------------------------- grader mode
+// When make.fun's grader runs this program it sets MAKEFUN_OUTPUT_DIR: the
+// program's whole job in that run is to copy VIDEO.json from the repository
+// root into the output directory, where the gate reads it (see the kit's
+// RULES, "The video file"). Run locally without that variable, it renders
+// the ad instead.
+const OUT_DIR = process.env.MAKEFUN_OUTPUT_DIR;
+if (OUT_DIR) {
+  mkdirSync(OUT_DIR, { recursive: true });
+  copyFileSync(join(ROOT, "VIDEO.json"), join(OUT_DIR, "VIDEO.json"));
+  console.log("copied VIDEO.json to " + OUT_DIR);
+} else {
+  main();
+}
